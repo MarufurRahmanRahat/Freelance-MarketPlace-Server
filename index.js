@@ -28,11 +28,29 @@ async function run() {
     const jobsCollection = db.collection("Freelance-Marketplace");
 
       //API starts here 
-    app.get('/jobs', async (req,res)=>{
-      const result = await jobsCollection.find().toArray()
+    app.get('/jobs', async (req, res) => {
+      try {
+        const sort = req.query.sort; 
+        let query = {};
+        let sortOption = {};
 
-      res.send(result)
-    })
+        if (sort === 'newest') {
+          sortOption = { postedDate: -1 };
+        } else if (sort === 'oldest') {
+          sortOption = { postedDate: 1 }; 
+        }
+
+        const jobs = await jobsCollection.find(query).sort(sortOption).toArray();
+        res.send(jobs);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch jobs"
+        });
+      }
+    });
+
      
     //6ta latest jobgula
      app.get('/latestJobs', async (req, res) => {
@@ -51,6 +69,8 @@ async function run() {
         });
       }
      })
+
+   
 
 
 
