@@ -128,6 +128,22 @@ async function run() {
     });
 
 
+    // accepted job 
+    app.get('/myPostedJobs/:email', async (req, res) => {
+       try {
+        const email = req.params.email;
+        const query = { userEmail: email };
+        const jobs = await jobsCollection.find(query).toArray();
+        res.send(jobs);
+      } catch (error) {
+        console.error("Error fetching user's jobs:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch your jobs"
+        });
+      }
+    });
+
 
    
 
