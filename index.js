@@ -97,6 +97,37 @@ async function run() {
       }
     });
 
+    // job add korar jonno
+    app.post('/addJob', async (req, res) => {
+      try {
+        const jobData = {
+          title: req.body.title,
+          postedBy: req.body.postedBy,
+          category: req.body.category,
+          summary: req.body.summary,
+          coverImage: req.body.coverImage,
+          userEmail: req.body.userEmail,
+          postedDate: new Date()
+        };
+
+        const result = await jobsCollection.insertOne(jobData);
+        res.status(201).send({
+          success: true,
+          message: "Job added successfully!",
+          jobId: result.insertedId
+        });
+      }
+      catch (error) {
+        console.error("Error adding job:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to add job",
+          error: error.message
+        });
+      }
+    });
+
+
 
    
 
