@@ -211,6 +211,53 @@ async function run() {
     });
 
 
+    //  job accept korbo
+     app.post('/acceptJob', async (req, res) => {
+      try {
+        const acceptedJobData = {
+          jobId: req.body.jobId,
+          jobTitle: req.body.jobTitle,
+          jobCategory: req.body.jobCategory,
+          postedBy: req.body.postedBy,
+          acceptedBy: req.body.acceptedBy, 
+          acceptedByName: req.body.acceptedByName,
+          acceptedDate: new Date(),
+          status: 'pending' 
+        };
+
+        const result = await acceptedJobsCollection.insertOne(acceptedJobData);
+        res.status(201).send({
+          success: true,
+          message: "Job accepted successfully!",
+          acceptedJobId: result.insertedId
+        });
+         } catch (error) {
+        console.error("Error accepting job:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to accept job"
+        });
+      }
+    });
+
+    // posted job gula dekhbo
+    app.get('/my-accepted-tasks/:email', async (req, res) => {
+      try {
+        const email = req.params.email;
+        const query = { acceptedBy: email };
+        const tasks = await acceptedJobsCollection.find(query).toArray();
+        res.send(tasks);
+      } catch (error) {
+        console.error("Error fetching accepted tasks:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch accepted tasks"
+        });
+      }
+    });
+
+
+
    
 
 
