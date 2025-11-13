@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
     const db = client.db("Freelance-Marketplace-DB");
     const jobsCollection = db.collection("Freelance-Marketplace");
+    const acceptedJobsCollection = db.collection("acceptedJobs");
 
       //API starts here 
     app.get('/jobs', async (req, res) => {
@@ -181,6 +182,33 @@ async function run() {
       }
     });
 
+    // delete korar jonno
+    app.delete('/deleteJob/:id', async (req, res)=> {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await jobsCollection.deleteOne(query);
+
+        if (result.deletedCount === 0) {
+          return res.status(404).send({
+            success: false,
+            message: "Job not found"
+          });
+        }
+
+         res.send({
+          success: true,
+          message: "Job deleted successfully!",
+          deletedCount: result.deletedCount
+        });
+      } catch (error) {
+        console.error("Error deleting job:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to delete job"
+        });
+      }
+    });
 
 
    
