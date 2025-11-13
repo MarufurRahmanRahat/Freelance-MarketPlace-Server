@@ -144,6 +144,44 @@ async function run() {
       }
     });
 
+    // job update korar jonno
+     app.put('/updateJob/:id', async (req, res) =>{
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updatedJob = {
+          $set: {
+            title: req.body.title,
+            category: req.body.category,
+            summary: req.body.summary,
+            coverImage: req.body.coverImage,
+            updatedDate: new Date()
+          }
+        };
+         const result = await jobsCollection.updateOne(filter, updatedJob);
+
+        if (result.matchedCount === 0) {
+          return res.status(404).send({
+            success: false,
+            message: "Job not found"
+          });
+        }
+
+        res.send({
+          success: true,
+          message: "Job updated successfully!",
+          modifiedCount: result.modifiedCount
+        });
+      } catch (error) {
+        console.error("Error updating job:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to update job"
+        });
+      }
+    });
+
+
 
    
 
