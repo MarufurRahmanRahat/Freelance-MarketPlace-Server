@@ -25,8 +25,16 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    const database = client.db("Freelace-Marketplace-DB");
-    const jobsCollection = database.collection("Freelance-Marketplace");
+    const db = client.db("Freelance-Marketplace-DB");
+    const jobsCollection = db.collection("Freelance-Marketplace");
+
+      //starts here 
+    app.get('/jobs', async (req,res)=>{
+      const result = await jobsCollection.find().toArray()
+      // console.log(result)
+     
+      res.send(result)
+    })
 
 
 
