@@ -23,18 +23,34 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const db = client.db("Freelance-Marketplace-DB");
     const jobsCollection = db.collection("Freelance-Marketplace");
 
-      //starts here 
+      //API starts here 
     app.get('/jobs', async (req,res)=>{
       const result = await jobsCollection.find().toArray()
-      // console.log(result)
-     
+
       res.send(result)
     })
+     
+    //6ta latest jobgula
+     app.get('/latestJobs', async (req, res) => {
+      try {
+        const jobs = await jobsCollection
+          .find()
+          .sort({ postedDate: -1 })
+          .limit(6)
+          .toArray();
+        res.send(jobs);
+      }catch (error) {
+        console.error("Error fetching latest jobs:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch latest jobs"
+        });
+      }
+     })
 
 
 
