@@ -256,6 +256,36 @@ async function run() {
       }
     });
 
+    // cancel or delete korar jonno 
+     app.delete('/acceptedTask/:id', async (req, res) => {
+       try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await acceptedJobsCollection.deleteOne(query);
+
+         if (result.deletedCount === 0) {
+          return res.status(404).send({
+            success: false,
+            message: "Task not found"
+          });
+        }
+         res.send({
+          success: true,
+          message: "Task removed successfully!",
+          deletedCount: result.deletedCount
+        });
+        } catch (error) {
+        console.error("Error removing task:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to remove task"
+        });
+      }
+    });
+
+   
+
+
 
 
    
