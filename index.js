@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 3000 ;
 
@@ -69,6 +69,34 @@ async function run() {
         });
       }
      })
+
+
+      app.get('/jobs/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const job = await jobsCollection.findOne(query);
+        console.log(id);
+        
+        console.log(job);
+        
+        if (!job) {
+          return res.status(404).send({
+            success: false,
+            message: "Job not found"
+          });
+        }
+
+        res.send(job);
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch job details"
+        });
+      }
+    });
+
 
    
 
